@@ -39,6 +39,11 @@ const projects = [
         name: "grammarguard",
         progress: "in progress",
         link: "https://grammarguard.vercel.app/"
+    },
+    {
+        name: "Fountain Macro Assistant",
+        progress: "in progress",
+        link: "https://fountain-macro-assistant.vercel.app/"
     }
 ];
 
