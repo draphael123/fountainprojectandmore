@@ -24,6 +24,11 @@ const projects = [
         name: "docusign generator",
         progress: "complete",
         link: "https://docusign-mauve.vercel.app/"
+    },
+    {
+        name: "world clock",
+        progress: "complete",
+        link: "https://time-clock-extension-oytxql0ph-daniel-8982s-projects.vercel.app/"
     }
 ];
 
