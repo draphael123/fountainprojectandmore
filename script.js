@@ -88,64 +88,10 @@ function renderProjects() {
     });
 }
 
-// Suggestions data
-const suggestions = [
-    {
-        title: "Update Project Status Regularly",
-        description: "Keep your project statuses up to date so team members always know what's happening. Mark projects as complete when finished!",
-        icon: "🔄"
-    },
-    {
-        title: "Add More Projects",
-        description: "Track all your Fountain projects in one place. Simply add new entries to the projects array in script.js.",
-        icon: "➕"
-    },
-    {
-        title: "Use Descriptive Project Names",
-        description: "Clear project names make it easier to identify and find projects quickly. Be specific and concise.",
-        icon: "📝"
-    },
-    {
-        title: "Keep Links Updated",
-        description: "Ensure all project links are working and point to the latest deployed versions. Broken links can waste time.",
-        icon: "🔗"
-    },
-    {
-        title: "Review Blocked Projects",
-        description: "Regularly check blocked projects and identify blockers. Move them to 'in progress' once unblocked.",
-        icon: "🚧"
-    },
-    {
-        title: "Celebrate Completed Projects",
-        description: "Mark completed projects to track your progress and celebrate your achievements!",
-        icon: "🎉"
-    }
-];
-
-// Function to render suggestions
-function renderSuggestions() {
-    const suggestionsContainer = document.getElementById('suggestions-list');
-    suggestionsContainer.innerHTML = '';
-    
-    suggestions.forEach(suggestion => {
-        const card = document.createElement('div');
-        card.className = 'suggestion-card';
-        
-        card.innerHTML = `
-            <div class="suggestion-icon">${suggestion.icon}</div>
-            <h3>${suggestion.title}</h3>
-            <p>${suggestion.description}</p>
-        `;
-        
-        suggestionsContainer.appendChild(card);
-    });
-}
-
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Projects data:', projects);
     renderProjects();
-    renderSuggestions();
     console.log('Projects rendered');
 });
 
