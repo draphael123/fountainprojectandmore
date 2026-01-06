@@ -9,23 +9,87 @@
 <body>
     <div class="container">
         <header>
-            <h1>Fountain Projects</h1>
+            <div class="header-content">
+                <h1>Fountain Projects</h1>
+                <div class="header-actions">
+                    <button id="dark-mode-toggle" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
+                    <button id="add-project-btn" class="add-project-btn" onclick="showProjectModal()">+ Add Project</button>
+                </div>
+            </div>
         </header>
         
         <main>
-            <table class="projects-table">
-                <thead>
-                    <tr>
-                        <th>Project Name</th>
-                        <th>Progress</th>
-                        <th>Link</th>
-                    </tr>
-                </thead>
-                <tbody id="projects-list">
-                    <!-- Projects will be loaded here -->
-                </tbody>
-            </table>
+            <!-- Statistics Dashboard -->
+            <section class="stats-section">
+                <div id="stats-container" class="stats-grid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </section>
             
+            <!-- Controls Section -->
+            <section class="controls-section">
+                <div class="controls-row">
+                    <div class="search-filter-group">
+                        <input type="text" id="search-input" class="search-input" placeholder="🔍 Search projects...">
+                        <select id="status-filter" class="filter-select">
+                            <option value="all">All Status</option>
+                            <option value="in progress">In Progress</option>
+                            <option value="blocked">Blocked</option>
+                            <option value="complete">Complete</option>
+                        </select>
+                        <select id="category-filter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="Web App">Web App</option>
+                            <option value="Tool">Tool</option>
+                            <option value="Extension">Extension</option>
+                        </select>
+                    </div>
+                    <div class="export-group">
+                        <button id="export-csv" class="export-btn">📊 Export CSV</button>
+                        <button id="export-json" class="export-btn">💾 Export JSON</button>
+                    </div>
+                </div>
+                
+                <!-- Bulk Actions -->
+                <div id="bulk-actions" class="bulk-actions" style="display: none;">
+                    <span id="selected-count">0</span> project(s) selected
+                    <select id="bulk-status" class="filter-select">
+                        <option value="">Change Status...</option>
+                        <option value="in progress">In Progress</option>
+                        <option value="blocked">Blocked</option>
+                        <option value="complete">Complete</option>
+                    </select>
+                    <button id="bulk-delete" class="delete-btn">🗑️ Delete Selected</button>
+                </div>
+            </section>
+            
+            <!-- Projects Table -->
+            <section class="projects-section">
+                <table class="projects-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="select-all" title="Select all"></th>
+                            <th>Project Name</th>
+                            <th>Progress</th>
+                            <th>Link</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projects-list">
+                        <!-- Projects will be loaded here -->
+                    </tbody>
+                </table>
+            </section>
+            
+            <!-- Activity Timeline -->
+            <section class="activity-section">
+                <h2>📋 Recent Activity</h2>
+                <div id="activity-timeline" class="activity-timeline">
+                    <!-- Activity will be loaded here -->
+                </div>
+            </section>
+            
+            <!-- Request Form -->
             <section class="request-section">
                 <h2>💬 Submit a Request</h2>
                 <form id="request-form" class="request-form">
@@ -48,7 +112,52 @@
         </main>
     </div>
     
-    <script src="script.js?v=2"></script>
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Project</h2>
+                <button class="close-btn" onclick="closeProjectModal()">×</button>
+            </div>
+            <form id="project-form" class="modal-form">
+                <input type="hidden" id="project-id">
+                <div class="form-group">
+                    <label for="project-name">Project Name *</label>
+                    <input type="text" id="project-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-link">Project Link *</label>
+                    <input type="url" id="project-link" required>
+                </div>
+                <div class="form-group">
+                    <label for="project-progress">Progress Status *</label>
+                    <select id="project-progress" required>
+                        <option value="in progress">In Progress</option>
+                        <option value="blocked">Blocked</option>
+                        <option value="complete">Complete</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="project-category">Category</label>
+                    <select id="project-category">
+                        <option value="">None</option>
+                        <option value="Web App">Web App</option>
+                        <option value="Tool">Tool</option>
+                        <option value="Extension">Extension</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="project-description">Description</label>
+                    <textarea id="project-description" rows="4" placeholder="Optional project description..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeProjectModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Save Project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js?v=3"></script>
 </body>
 </html>
-
