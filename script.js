@@ -49,6 +49,11 @@ const projects = [
         name: "Fountain SEO",
         progress: "in progress",
         link: "https://seo-test-chi.vercel.app/"
+    },
+    {
+        name: "availability report",
+        progress: "in progress",
+        link: "https://website-puce-rho-32.vercel.app/"
     }
 ];
 
@@ -88,10 +93,47 @@ function renderProjects() {
     });
 }
 
+// Handle request form submission
+function handleRequestForm() {
+    const form = document.getElementById('request-form');
+    const messageDiv = document.getElementById('form-message');
+    
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const requestData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message'),
+                timestamp: new Date().toISOString()
+            };
+            
+            // Log the request (in production, this would be sent to a backend)
+            console.log('Request submitted:', requestData);
+            
+            // Show success message
+            messageDiv.className = 'form-message success';
+            messageDiv.textContent = 'Thank you! Your request has been submitted. We\'ll get back to you soon.';
+            messageDiv.style.display = 'block';
+            
+            // Reset form
+            form.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        });
+    }
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Projects data:', projects);
     renderProjects();
+    handleRequestForm();
     console.log('Projects rendered');
 });
 

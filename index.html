@@ -25,6 +25,26 @@
                     <!-- Projects will be loaded here -->
                 </tbody>
             </table>
+            
+            <section class="request-section">
+                <h2>💬 Submit a Request</h2>
+                <form id="request-form" class="request-form">
+                    <div class="form-group">
+                        <label for="request-name">Your Name</label>
+                        <input type="text" id="request-name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-email">Your Email</label>
+                        <input type="email" id="request-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="request-message">Your Request</label>
+                        <textarea id="request-message" name="message" rows="5" required placeholder="Describe your request, suggestion, or feedback..."></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit Request</button>
+                    <div id="form-message" class="form-message"></div>
+                </form>
+            </section>
         </main>
     </div>
     
