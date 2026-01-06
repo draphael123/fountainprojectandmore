@@ -44,5 +44,9 @@ function renderProjects() {
 }
 
 // Initialize on page load
-document.addEventListener('DOMContentLoaded', renderProjects);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Projects data:', projects);
+    renderProjects();
+    console.log('Projects rendered');
+});
 
