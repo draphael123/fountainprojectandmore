@@ -14,6 +14,11 @@ const projects = [
         name: "document scrapper",
         progress: "in progress",
         link: "https://doc-extraction.vercel.app/"
+    },
+    {
+        name: "data visualization",
+        progress: "in progress",
+        link: "https://data-visualization-7szrf1s6a-daniel-8982s-projects.vercel.app/"
     }
 ];
 
