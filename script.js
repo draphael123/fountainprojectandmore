@@ -29,6 +29,11 @@ const projects = [
         name: "world clock",
         progress: "complete",
         link: "https://time-clock-extension-oytxql0ph-daniel-8982s-projects.vercel.app/"
+    },
+    {
+        name: "refund calculator",
+        progress: "in progress",
+        link: "https://refund-calculator-five.vercel.app/"
     }
 ];
 
