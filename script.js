@@ -34,6 +34,11 @@ const projects = [
         name: "refund calculator",
         progress: "in progress",
         link: "https://refund-calculator-five.vercel.app/"
+    },
+    {
+        name: "grammarguard",
+        progress: "in progress",
+        link: "https://grammarguard.vercel.app/"
     }
 ];
 
