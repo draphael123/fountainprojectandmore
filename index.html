@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fountain Projects - Comprehensive project management">
     <title>Fountain Projects</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="container">
@@ -12,8 +14,10 @@
             <div class="header-content">
                 <h1>Fountain Projects</h1>
                 <div class="header-actions">
+                    <button id="view-mode-toggle" class="view-mode-btn" title="Toggle view mode">📋</button>
                     <button id="dark-mode-toggle" class="dark-mode-btn" title="Toggle dark mode">🌙</button>
                     <button id="add-project-btn" class="add-project-btn" onclick="showProjectModal()">+ Add Project</button>
+                    <button id="shortcuts-help-btn" class="help-btn" onclick="showKeyboardShortcutsHelp()" title="Keyboard shortcuts (press ?)">?</button>
                 </div>
             </div>
         </header>
@@ -26,11 +30,19 @@
                 </div>
             </section>
             
+            <!-- Analytics Section -->
+            <section class="analytics-section" id="analytics-container" style="display: none;">
+                <!-- Analytics will be loaded here -->
+            </section>
+            
             <!-- Controls Section -->
             <section class="controls-section">
                 <div class="controls-row">
                     <div class="search-filter-group">
-                        <input type="text" id="search-input" class="search-input" placeholder="🔍 Search projects...">
+                        <div class="search-wrapper">
+                            <input type="text" id="search-input" class="search-input" placeholder="🔍 Search projects...">
+                            <div id="autocomplete-container" class="autocomplete-container"></div>
+                        </div>
                         <select id="status-filter" class="filter-select">
                             <option value="all">All Status</option>
                             <option value="in progress">In Progress</option>
@@ -43,11 +55,81 @@
                             <option value="Tool">Tool</option>
                             <option value="Extension">Extension</option>
                         </select>
+                        <select id="priority-filter" class="filter-select">
+                            <option value="all">All Priorities</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <select id="sort-select" class="filter-select">
+                            <option value="order-asc">Sort: Custom Order</option>
+                            <option value="name-asc">Sort: Name (A-Z)</option>
+                            <option value="name-desc">Sort: Name (Z-A)</option>
+                            <option value="progress-asc">Sort: Status</option>
+                            <option value="priority-desc">Sort: Priority (High-Low)</option>
+                            <option value="priority-asc">Sort: Priority (Low-High)</option>
+                            <option value="dueDate-asc">Sort: Due Date (Earliest)</option>
+                            <option value="dueDate-desc">Sort: Due Date (Latest)</option>
+                            <option value="createdAt-desc">Sort: Newest First</option>
+                            <option value="createdAt-asc">Sort: Oldest First</option>
+                            <option value="updatedAt-desc">Sort: Recently Updated</option>
+                        </select>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="favorite-filter">
+                            ⭐ Favorites Only
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="archive-filter" onchange="toggleArchiveView()">
+                            📦 Show Archived
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="controls-row">
+                    <div class="action-group">
+                        <button id="bulk-edit-btn" class="action-btn" onclick="showBulkEditModal()">✏️ Bulk Edit</button>
+                        <button id="validate-links-btn" class="action-btn" onclick="validateAllLinks()">🔗 Validate Links</button>
+                        <button id="analytics-toggle" class="action-btn" onclick="document.getElementById('analytics-container').style.display = document.getElementById('analytics-container').style.display === 'none' ? 'block' : 'none'; renderAnalytics();">📊 Analytics</button>
+                        <button id="share-btn" class="action-btn" onclick="generateShareLink()">🔗 Share</button>
                     </div>
                     <div class="export-group">
                         <button id="export-csv" class="export-btn">📊 Export CSV</button>
                         <button id="export-json" class="export-btn">💾 Export JSON</button>
+                        <label class="import-btn">
+                            📥 Import CSV
+                            <input type="file" id="import-csv" accept=".csv" style="display: none;">
+                        </label>
+                        <label class="import-btn">
+                            📥 Import JSON
+                            <input type="file" id="import-json" accept=".json" style="display: none;">
+                        </label>
                     </div>
+                </div>
+                
+                <div class="controls-row">
+                    <div class="preset-group">
+                        <span>Filter Presets:</span>
+                        <div id="filter-presets" class="filter-presets"></div>
+                        <button onclick="const name = prompt('Preset name:'); if(name) saveFilterPreset(name);" class="save-preset-btn">💾 Save Preset</button>
+                    </div>
+                    <div class="backup-group">
+                        <button id="backup-btn" class="backup-btn">💾 Backup</button>
+                        <label class="restore-btn">
+                            📥 Restore
+                            <input type="file" id="restore-btn" accept=".json" style="display: none;">
+                        </label>
+                        <button id="sync-export-btn" class="sync-btn">📤 Sync Export</button>
+                        <label class="sync-btn">
+                            📥 Sync Import
+                            <input type="file" id="sync-import-btn" accept=".json" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Search History -->
+                <div class="search-history-section">
+                    <span>Recent Searches:</span>
+                    <div id="search-history" class="search-history"></div>
                 </div>
                 
                 <!-- Bulk Actions -->
@@ -69,9 +151,12 @@
                     <thead>
                         <tr>
                             <th><input type="checkbox" id="select-all" title="Select all"></th>
-                            <th>Project Name</th>
-                            <th>Progress</th>
+                            <th onclick="setSort('name', currentSort.field === 'name' && currentSort.direction === 'asc' ? 'desc' : 'asc')" style="cursor: pointer;">Project Name ↕️</th>
+                            <th onclick="setSort('priority', currentSort.field === 'priority' && currentSort.direction === 'desc' ? 'asc' : 'desc')" style="cursor: pointer;">Priority ↕️</th>
+                            <th onclick="setSort('progress', currentSort.field === 'progress' && currentSort.direction === 'asc' ? 'desc' : 'asc')" style="cursor: pointer;">Progress ↕️</th>
+                            <th onclick="setSort('dueDate', currentSort.field === 'dueDate' && currentSort.direction === 'asc' ? 'desc' : 'asc')" style="cursor: pointer;">Due Date ↕️</th>
                             <th>Link</th>
+                            <th>Health</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -112,7 +197,7 @@
         </main>
     </div>
     
-    <!-- Project Modal -->
+    <!-- Project Modal (Enhanced) -->
     <div id="project-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -121,34 +206,70 @@
             </div>
             <form id="project-form" class="modal-form">
                 <input type="hidden" id="project-id">
-                <div class="form-group">
-                    <label for="project-name">Project Name *</label>
-                    <input type="text" id="project-name" required>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="project-name">Project Name *</label>
+                        <input type="text" id="project-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-icon">Icon/Emoji</label>
+                        <input type="text" id="project-icon" placeholder="🚀" maxlength="2">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="project-link">Project Link *</label>
                     <input type="url" id="project-link" required>
                 </div>
-                <div class="form-group">
-                    <label for="project-progress">Progress Status *</label>
-                    <select id="project-progress" required>
-                        <option value="in progress">In Progress</option>
-                        <option value="blocked">Blocked</option>
-                        <option value="complete">Complete</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="project-progress">Progress Status *</label>
+                        <select id="project-progress" required>
+                            <option value="in progress">In Progress</option>
+                            <option value="blocked">Blocked</option>
+                            <option value="complete">Complete</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-priority">Priority</label>
+                        <select id="project-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="project-category">Category</label>
+                        <select id="project-category">
+                            <option value="">None</option>
+                            <option value="Web App">Web App</option>
+                            <option value="Tool">Tool</option>
+                            <option value="Extension">Extension</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="project-due-date">Due Date</label>
+                        <input type="date" id="project-due-date">
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="project-category">Category</label>
-                    <select id="project-category">
-                        <option value="">None</option>
-                        <option value="Web App">Web App</option>
-                        <option value="Tool">Tool</option>
-                        <option value="Extension">Extension</option>
-                    </select>
+                    <label for="project-tags">Tags (comma-separated)</label>
+                    <input type="text" id="project-tags" placeholder="web, app, tool">
+                </div>
+                <div class="form-group">
+                    <label for="project-color">Color</label>
+                    <input type="color" id="project-color" value="#667eea">
                 </div>
                 <div class="form-group">
                     <label for="project-description">Description</label>
                     <textarea id="project-description" rows="4" placeholder="Optional project description..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="project-favorite">
+                        ⭐ Mark as favorite
+                    </label>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="cancel-btn" onclick="closeProjectModal()">Cancel</button>
@@ -158,6 +279,74 @@
         </div>
     </div>
     
-    <script src="script.js?v=3"></script>
+    <!-- Bulk Edit Modal -->
+    <div id="bulk-edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Bulk Edit <span id="bulk-edit-count">0</span> Projects</h2>
+                <button class="close-btn" onclick="closeBulkEditModal()">×</button>
+            </div>
+            <form class="modal-form" onsubmit="event.preventDefault(); applyBulkEdit();">
+                <div class="form-group">
+                    <label for="bulk-edit-category">Category</label>
+                    <select id="bulk-edit-category">
+                        <option value="">Keep Current</option>
+                        <option value="Web App">Web App</option>
+                        <option value="Tool">Tool</option>
+                        <option value="Extension">Extension</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bulk-edit-priority">Priority</label>
+                    <select id="bulk-edit-priority">
+                        <option value="">Keep Current</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bulk-edit-tags">Add Tags (comma-separated)</label>
+                    <input type="text" id="bulk-edit-tags" placeholder="tag1, tag2">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeBulkEditModal()">Cancel</button>
+                    <button type="submit" class="save-btn">Apply Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Keyboard Shortcuts Modal -->
+    <div id="shortcuts-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Keyboard Shortcuts</h2>
+                <button class="close-btn" onclick="closeShortcutsModal()">×</button>
+            </div>
+            <div class="modal-form">
+                <div class="shortcuts-list">
+                    <div class="shortcut-item">
+                        <kbd>Ctrl/Cmd</kbd> + <kbd>N</kbd>
+                        <span>New Project</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Ctrl/Cmd</kbd> + <kbd>F</kbd>
+                        <span>Focus Search</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>?</kbd>
+                        <span>Show Shortcuts</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <kbd>Esc</kbd>
+                        <span>Close Modal</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js?v=4"></script>
 </body>
 </html>
