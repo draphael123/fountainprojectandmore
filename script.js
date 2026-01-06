@@ -44,6 +44,11 @@ const projects = [
         name: "Fountain Macro Assistant",
         progress: "in progress",
         link: "https://fountain-macro-assistant.vercel.app/"
+    },
+    {
+        name: "Fountain SEO",
+        progress: "in progress",
+        link: "https://seo-test-chi.vercel.app/"
     }
 ];
 
