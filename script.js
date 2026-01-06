@@ -9,6 +9,11 @@ const projects = [
         name: "itemized receipts",
         progress: "blocked",
         link: "https://itemized-receipt-builder.vercel.app/"
+    },
+    {
+        name: "document scrapper",
+        progress: "in progress",
+        link: "https://doc-extraction.vercel.app/"
     }
 ];
 
