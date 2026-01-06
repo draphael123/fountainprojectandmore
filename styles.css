@@ -147,9 +147,40 @@ main {
     transition: all 0.3s ease;
 }
 
-.stat-card:hover {
+.stat-card.stat-filter {
+    cursor: pointer;
+    user-select: none;
+}
+
+.stat-card.stat-filter:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+}
+
+.stat-card.stat-filter.active {
+    border: 3px solid #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2), 0 10px 30px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+}
+
+.stat-card.stat-in-progress.active {
+    border-color: #f9ca24;
+    box-shadow: 0 0 0 3px rgba(249, 202, 36, 0.2), 0 10px 30px rgba(249, 202, 36, 0.4);
+    background: linear-gradient(135deg, rgba(249, 202, 36, 0.2) 0%, rgba(240, 147, 43, 0.2) 100%);
+}
+
+.stat-card.stat-blocked.active {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), 0 10px 30px rgba(255, 107, 107, 0.4);
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.2) 0%, rgba(238, 90, 111, 0.2) 100%);
+}
+
+.stat-card.stat-complete.active {
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2), 0 10px 30px rgba(78, 205, 196, 0.4);
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(68, 160, 141, 0.2) 100%);
 }
 
 .stat-value {

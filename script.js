@@ -62,21 +62,22 @@ function renderStatistics() {
     if (!statsContainer) return;
     
     const progressPercent = stats.total > 0 ? Math.round((stats.complete / stats.total) * 100) : 0;
+    const activeStatus = currentFilter.status;
     
     statsContainer.innerHTML = `
-        <div class="stat-card">
+        <div class="stat-card stat-filter ${activeStatus === 'all' ? 'active' : ''}" data-filter="all" onclick="filterByStatus('all')">
             <div class="stat-value">${stats.total}</div>
             <div class="stat-label">Total Projects</div>
         </div>
-        <div class="stat-card stat-in-progress">
+        <div class="stat-card stat-in-progress stat-filter ${activeStatus === 'in progress' ? 'active' : ''}" data-filter="in progress" onclick="filterByStatus('in progress')">
             <div class="stat-value">${stats.inProgress}</div>
             <div class="stat-label">In Progress</div>
         </div>
-        <div class="stat-card stat-blocked">
+        <div class="stat-card stat-blocked stat-filter ${activeStatus === 'blocked' ? 'active' : ''}" data-filter="blocked" onclick="filterByStatus('blocked')">
             <div class="stat-value">${stats.blocked}</div>
             <div class="stat-label">Blocked</div>
         </div>
-        <div class="stat-card stat-complete">
+        <div class="stat-card stat-complete stat-filter ${activeStatus === 'complete' ? 'active' : ''}" data-filter="complete" onclick="filterByStatus('complete')">
             <div class="stat-value">${stats.complete}</div>
             <div class="stat-label">Complete</div>
         </div>
@@ -90,6 +91,17 @@ function renderStatistics() {
     `;
 }
 
+// Filter by status from stat card click
+function filterByStatus(status) {
+    currentFilter.status = status;
+    const statusFilter = document.getElementById('status-filter');
+    if (statusFilter) {
+        statusFilter.value = status;
+    }
+    renderStatistics();
+    renderProjects();
+}
+
 // Filter and search
 let currentFilter = { status: 'all', category: 'all', search: '' };
 
@@ -99,6 +111,7 @@ function applyFilters() {
     const categoryFilter = document.getElementById('category-filter')?.value || 'all';
     
     currentFilter = { status: statusFilter, category: categoryFilter, search: searchTerm };
+    renderStatistics(); // Update stat cards to show active filter
     renderProjects();
 }
 
@@ -533,7 +546,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Filters
     const statusFilter = document.getElementById('status-filter');
     const categoryFilter = document.getElementById('category-filter');
-    if (statusFilter) statusFilter.addEventListener('change', applyFilters);
+    if (statusFilter) {
+        statusFilter.addEventListener('change', function() {
+            currentFilter.status = this.value;
+            renderStatistics(); // Update stat cards to show active filter
+            renderProjects();
+        });
+    }
     if (categoryFilter) categoryFilter.addEventListener('change', applyFilters);
     
     // Export buttons
