@@ -4,6 +4,11 @@ const projects = [
         name: "Fountain Onboarding",
         progress: "in progress",
         link: "https://fountain-onboarding-n6vod5aah-daniel-8982s-projects.vercel.app/"
+    },
+    {
+        name: "itemized receipts",
+        progress: "blocked",
+        link: "https://itemized-receipt-builder.vercel.app/"
     }
 ];
 
