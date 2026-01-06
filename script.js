@@ -19,6 +19,11 @@ const projects = [
         name: "data visualization",
         progress: "in progress",
         link: "https://data-visualization-7szrf1s6a-daniel-8982s-projects.vercel.app/"
+    },
+    {
+        name: "docusign generator",
+        progress: "complete",
+        link: "https://docusign-mauve.vercel.app/"
     }
 ];
 
